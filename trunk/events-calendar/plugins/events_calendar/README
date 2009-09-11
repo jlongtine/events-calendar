@@ -8,7 +8,7 @@ EventsCalendar
 
 == Install
  * In your rails application run the following command.
-    -  ruby script/plugin install svn://bart/source/ridgecrest/trunk/lankaweb/event_calendar/vendor/plugins/events_calendar/
+    -  ruby script/plugin install http://events-calendar.googlecode.com/svn/trunk/events-calendar/plugins/events_calendar
 
 ==Dependancy
  * Install the "gcal4ruby (0.2.2)" ruby gem.
