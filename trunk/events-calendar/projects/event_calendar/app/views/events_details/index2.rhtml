@@ -1,0 +1,69 @@
+<div align="center">
+  <div>
+    <p>The details of ticket fees and transaction processing fees are shown below.</p>
+  </div>
+  <div><h2>Ticket Fees</h2></div>
+  <table width="70%">
+    <%if @seat_types && @seat_types.length > 0%>
+    <tr align="left">
+      <td><strong>Theater</strong></td>
+      <td><strong>Full</strong></td>
+      <td><strong>Half</strong></td>
+    </tr>
+    <%for seat_type in @seat_types%>
+    <tr align="left">
+      <td><%= seat_type.theater.theater_name %></td>
+      <td><%= fmt_rupees(seat_type.price) %></td>
+      <td><%= fmt_rupees(seat_type.child_tickets_price) %></td>
+    </tr>
+    <%end%>
+    <%else%>
+    <tr>
+      <td>
+        <p>No information to display</p>
+      </td>
+    </tr>
+    <%end%>
+    <tr>
+      <td colspan="3">
+        ---------------------
+      </td>
+    </tr>
+    <tr align="justify">
+      <td colspan="3">
+          TicketsLK is currently running a promotional campaign to mark the launch of our service. During this period, we will substantially discount our processing fees. The promotional fees shown below will be valid through June 30, 2009 at the earliest.
+          Regular processing fees will vary by theater and seat type (full/half) with a current maximum fee of Rs. 35/=.
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3">
+        ---------------------
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3">
+        <div><h2>Transaction Fees</h2></div>
+      </td>
+    </tr>
+    <%if @commissions && @commissions.length > 0%>
+    <tr align="left">
+      <td><strong>Theater</strong></td>
+      <td><strong>Full</strong></td>
+      <td><strong>Half</strong></td>
+    </tr>
+    <%for commission in @commissions%>
+    <tr align="left">
+      <td><%= commission.theater.theater_name %></td>
+      <td><%= fmt_rupees(commission.adult_commission) %></td>
+      <td><%= fmt_rupees(commission.child_commision) %></td>
+    </tr>
+    <%end%>
+    <%else%>
+    <tr>
+      <td>
+        <p>No information to display</p>
+      </td>
+    </tr>
+    <%end%>
+  </table>
+</div>
