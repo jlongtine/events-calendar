@@ -1,0 +1,15 @@
+<html>
+  <body>
+    <%= javascript_include_tag "events_calendar_js/wz_tooltip"%>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+
+
+    <div style="height:300px;vertical-align:middle"  class="mid" align="center" id="calendar_div">
+      <%#=render_component :controller=>'events_calendars',:params => { :year => params[:year],:month=>params[:month] }, :action=>'index'%>
+     </div>
+<%= javascript_include_tag "events_calendar_js/events_calendar" %>
+  </body>
+</html>
+
+
+ 
