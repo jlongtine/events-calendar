@@ -1,0 +1,29 @@
+<h2>Delete a Single Instance</h2>
+
+<%= "Event Tiltle - #{@event.title}" if not @event.nil? %>
+<br><br>
+  <% date_time=[]
+    @re.sort_by {|u| u.start}.each{|reccurence|
+      date_time.push(Time.parse(reccurence.start.to_s).strftime("%Y-%m-%d at %I:%M%p"))
+    } if not @re.nil?
+    %>
+<%if not @re.nil?%>
+  <% form_tag '/events/delete_single_instance/' do -%>
+
+  Select a date to delete: <%= select_tag "selection", options_for_select( date_time,"" ) %>
+  <br>
+  <%= hidden_field_tag 'cal_id', @cal_id %>
+  <%= hidden_field_tag 'event_title', @event_title %>
+  <%= hidden_field_tag 'cal_title', @cal_title %>
+  <%= hidden_field_tag 'event_id', @event_id %>
+  <%= hidden_field_tag 'start', @start %>
+  <%= hidden_field_tag 'end', @end %>
+  <br>
+  <%= submit_tag 'Delete',:confirm => 'Are you sure you want to procceed?' %>
+ <% end-%>
+
+<%else%> 
+  No events to display for the selected range.
+<% end%>
+<br>
+<%=link_to 'Back', "/events/range_select/back?event_title=#{@event_title}&cal_id=#{@cal_id}&cal_title=#{@cal_title}&event_id=#{@event_id}" %>
