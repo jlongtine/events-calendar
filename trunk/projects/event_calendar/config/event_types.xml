@@ -12,7 +12,7 @@
 <event>
     <type>concert</type>
     <colour>yellow</colour>
-     <disply_first_only>true</disply_first_only>
+     <disply_first_only>false</disply_first_only>
 </event>
 <event>
     <type>other</type>

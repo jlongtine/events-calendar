@@ -218,7 +218,10 @@
 
 
       </script>
-    <%=link_to 'Back to Events', "/events?title=#{@cal_title}&cal_id=#{@cal_id}" %>
+     <br>
+    <%=link_to 'Back to Events', "/events?title=#{@cal_title}&cal_id=#{@cal_id}" %> &nbsp;&nbsp;
+    <%=link_to 'Edit Event',"/events/update/true?event_title=#{@event_title}&event_id=#{@event_id}&cal_id=#{@cal_id}"+
+        "&cal_title=#{@cal_title}&status=edit&year=#{@year}&month=#{@month}" %>
   </body>
 
 </html>

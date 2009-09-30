@@ -56,6 +56,36 @@
     {
       document.getElementById("repeats").value="No Repeats";
     }
+    function sDateOnchage(value){
+      document.getElementById("end_date").value=value;
+      startDateOnchage();
+    }
+
+    function typeOnchage(value){
+      if(value=="Holiday"){
+ 
+        document.getElementById("where").readOnly=true;
+        document.getElementById("content").readOnly=true;
+        document.getElementById("webpage").readOnly=true;
+
+
+        document.getElementById("where").value="N/A";
+        document.getElementById("content").value="N/A";
+        document.getElementById("webpage").value="N/A";     
+
+      }else{
+        document.getElementById("where").readOnly=false;
+        document.getElementById("content").readOnly=false;
+        document.getElementById("webpage").readOnly=false;
+
+
+        document.getElementById("where").value="";
+        document.getElementById("content").value="";
+        document.getElementById("webpage").value="";
+      }
+
+
+    }
 
     
 
@@ -75,7 +105,7 @@
             Event Type:
           </td>
           <td>
-            <%= select_tag "event_type", options_for_select(@events_type, "Film") %>
+            <%= select_tag "event_type", options_for_select(@events_type, "Film"),{:onchange => "typeOnchage(this.value)"} %>
           </td>
         </tr>
         <tr>
@@ -120,7 +150,7 @@
             Start Time:
           </td>
           <td>
-            <%= calendar_date_select_tag "start_date", Time.now, {:size=>"24%",:time => true ,:onchange => "startDateOnchage()"}  %>
+            <%= calendar_date_select_tag "start_date", Time.now, {:size=>"24%",:time => true ,:onchange => "sDateOnchage(this.value)"}  %>
           </td>
 
           <td>
