@@ -1,0 +1,28 @@
+<events>
+<event>
+    <type>film</type>
+    <colour>green</colour>
+     <disply_first_only>true</disply_first_only>
+</event>
+<event>
+    <type>party</type>
+    <colour>red</colour>
+    <disply_first_only>false</disply_first_only>
+</event>
+<event>
+    <type>concert</type>
+    <colour>yellow</colour>
+     <disply_first_only>false</disply_first_only>
+</event>
+<event>
+    <type>other</type>
+    <colour>#990099</colour>
+     <disply_first_only>false</disply_first_only>
+</event>
+<event>
+    <type>holiday</type>
+    <colour>orange</colour>
+     <disply_first_only>false</disply_first_only>
+</event>
+
+</events>
