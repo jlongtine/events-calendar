@@ -1,0 +1,191 @@
+<html>
+  <head>
+    <title>Google Calendar</title>
+    <link rel="stylesheet" href="/stylesheets/calendar/blue/style.css">
+    <style type="text/css">
+      .specialDay1 {background-color: green; color:black;}
+      .specialDay {background-color: red; color: black;}
+
+    </style>
+    <script type='text/javascript'>
+
+      function goto_month(year,month)
+      {
+ 
+        location.href='/googlecalendar?month='+month+'&year='+year;
+      }
+
+
+
+      function displaymessage(cellText,new_m)
+      {
+        alert(new_m);
+        var tooltip="";
+        var films="";
+        var others=""
+
+<%@event_ob.sort_by {|u| u.start}.each{|r|%>
+
+  <%dateTimeStart=DateTime.parse(r.start.to_s)%>
+  <%dateTimeEnd=DateTime.parse(r.end.to_s)%>
+
+      var cell="<%=dateTimeStart.mday%>";
+      if(cell==cellText){
+
+  <%if r.event_type=="film"%>
+          films=films+"<font size='2'><b><a href='<%=r.webpage%>' onClick='window.resizeTo(screen.width,screen.height)' ><%=r.title %></a></b><br> Location :"+
+            "<%=r.where %><br> Description : <%=r.content %></font><br><br>"
+
+  <%else%>
+          others=others+"<font size='2'><b><a href='<%=r.webpage%>' onClick='window.resizeTo(screen.width,screen.height)' ><%=r.title %> : <%=dateTimeStart.strftime("%I:%M%p") %>"+
+            "<%=dateTimeEnd.strftime(" to %I:%M%p") %></a></b><br> Location:"+
+            "<%=r.where %><br> Description : <%=r.content %></font><br><br>"
+
+  <%end%>
+
+      }
+<%}%>
+    if (films!=""){
+      tooltip=tooltip+"<font size='2'><b><u>Films</u></b></font><br>"+films
+    }
+    if (others!=""){
+      tooltip=tooltip+"<font size='2'><b><u>Others</u></b></font><br>"+others
+    }
+
+
+
+    if(tooltip!=""){
+      var newDoc=window.open('','','location=no,toolbar=no,scrollbars=yes,width=300,height=350')
+      var txt="<html><body>"+tooltip+"</body></html>";
+      newDoc.document.write(txt);
+      newDoc.moveTo(400,300);
+      newDoc.document.close()
+    }
+
+  }
+  function colorChangeIn(cellOb,cellText)
+  {
+    var tooltip="";
+    var films="";
+    var others=""
+
+<%@event_ob.sort_by {|u| u.start}.each{|r|%>
+
+  <%dateTimeStart=DateTime.parse(r.start.to_s)%>
+  <%dateTimeEnd=DateTime.parse(r.end.to_s)%>
+
+      var cell="<%=dateTimeStart.mday%>";
+      if(cell==cellText){
+
+  <%if r.event_type=="film"%>
+          films=films+"<font size='2'><b>"+
+            " <%=r.title %></b><br> Location : "+
+            "<%=r.where %><br> Description : <%=r.content.to_s %></font><br><br>"
+
+  <%else%>
+          others=others+"<font size='2'><b><%=dateTimeStart.strftime("%I:%M%p") %>"+
+            "<%=dateTimeEnd.strftime(" to %I:%M%p") %> : <%=r.title %></b><br> Location : "+
+            "<%=r.where %><br> Description : <%=r.content.to_s %></font><br><br>"
+
+  <%end%>
+
+      }
+<%}%>
+    if (films!=""){
+      tooltip=tooltip+"<font size='2'><b><u>Films</u></b></font><br>"+films
+    }
+    if (others!=""){
+      tooltip=tooltip+"<font size='2'><b><u>Others</u></b></font><br>"+others
+    }
+
+    if(tooltip!="")
+      ddrivetip(tooltip, 300);
+
+  }
+
+
+  function colorChangeOut(cellOb)
+  {
+
+    hideddrivetip();
+<%#*cellOb.style.backgroundColor='red'%>
+
+  }
+
+    </script>
+
+    <style type="text/css">
+
+                                                #dhtmltooltip{
+                                                  position: absolute;
+                                                  left: -300px;
+                                                  width: 150px;
+                                                  border: 1px solid black;
+                                                  padding: 2px;
+                                                  background-color: lightyellow;
+                                                  visibility: hidden;
+                                                  z-index: 100;
+                                                  filter: progid:DXImageTransform.Microsoft.Shadow(color=gray,direction=135);
+                                                }
+
+                                                #dhtmlpointer{
+                                                  position:absolute;
+                                                  left: -300px;
+                                                  z-index: 101;
+                                                  visibility: hidden;
+                                                }
+
+    </style>
+
+
+
+  </head>
+  <body>
+
+    <script LANGUAGE="JavaScript" SRC="javascripts/tooltip.js"></script>
+
+
+    <h1>Events Calendar</h1>
+    <table border="1">
+      <tr>
+        <td>
+          <%=calendar(:previous_month_text   => "&lt;&lt;prev",:next_month_text   =>"Next&gt;&gt;",:year => @year.to_i, :month => @month.to_i,:detail_view=>"true") do |d|
+            if @events.include?(d)
+
+              [d.mday, {:class => "specialDay"}]
+              #else
+              #[d.mday, {:class => "specialDay1"}]
+            end
+            #if @films.include?(d)
+
+            #[d.mday, {:class => "specialDay1"}]
+
+            #end
+
+          end
+        %>
+        </td>
+      </tr>
+      <tr>
+
+        <td>
+
+          <%@event_ob.sort_by {|u| u.start}.each{|r|%>
+            <p><font size="2">
+                <%="#{Time.parse(r.start.to_s).strftime("%d at %I:%M%p")} - #{r.title}"%>
+            </font></p>
+
+          <%}%>
+
+
+
+        </td>
+
+      </tr>
+
+    </table>
+
+
+
+  </body>
+</html>

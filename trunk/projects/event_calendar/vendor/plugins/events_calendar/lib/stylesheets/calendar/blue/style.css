@@ -1,0 +1,152 @@
+/*
+  A blue based theme, inspired by Blinksale and their ColorBurn widget. http://firewheeldesign.com
+
+  AUTHOR: Geoffrey Grosenbach http://nubyonrails.com
+
+  Colors:
+    Light Blue: bbccff
+    White: eeddee
+    Turq: 003355
+    Cream: ffffdd
+*/
+
+.calendar {
+  margin: auto;
+
+}
+.cal_container{
+    border: 1px solid #D8D8D8;
+    border-collapse:separate;
+}
+
+.monthName th {
+  font-weight: normal;
+  text-align: right;
+  padding-top: 1em;
+  padding-bottom: 0.7em;
+
+}
+
+.monthName a {
+  font-size: 0.9em;
+  cursor:pointer;
+}
+
+.monthName{
+  font-size: 0.9em;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+}
+
+.monthName a:hover {
+  background-color: #999999;
+  color: white;
+}
+
+
+.dayName th {
+  font-size: 0.7em;
+  padding-top: 0.6em;
+  padding-bottom: 0.3em;
+  background-color: #303030;
+  color: white;
+}
+
+.otherMonth, .day, .specialDay,.specialDay_film,.film_and_event,.holiday,.day_and_holiday,.mixed_events_and_holiday,.movie_and_holiday,.other_and_holiday,.weekend_and_holiday {
+
+  padding: 0.6em 0.8em;
+  border-right: 1px solid white;
+  font-size: 0.7em;
+}
+
+.otherMonth {
+  font-size: 0.7em;
+  color: #eeeeee;
+  background-color: white;
+
+}
+
+.day, .specialDay,.week,.specialDay_film,.holiday,.selected,.film_and_event,.day_and_holiday,.mixed_events_and_holiday,.movie_and_holiday,.other_and_holiday,.weekend_and_holiday  {
+  font-size: 0.7em;
+  text-align: center;
+  border-bottom: 1px dotted #bbbbbb;
+  background-color: #bbccff;
+  cursor:pointer;
+  border-collapse:separate;
+  background-repeat:no-repeat;
+}
+
+
+.day:hover,.specialDay:hover,.specialDay_film:hover,.holiday:hover,.film_and_event:hover  {
+   background-color: silver;
+
+}
+
+.week{
+    font-size: 0.8em;
+    background-color:#E0E0E0;
+    font-weight: bold;
+}
+
+
+.specialDay a, .specialDay a:visited, .specialDay a:hover {
+  color: white;
+  text-decoration: none;
+  padding: 1em;
+}
+.specialDay a:hover {
+  color: white;
+  background-color: black;
+}
+
+.weekendDay {
+  background-color: #ffffdd;
+}
+.today{
+	/*background-color: #4682b4;*/
+    border-collapse:separate;
+    border: 2px solid blue;
+
+}
+
+.specialDay_film {
+    background-color: green;
+    color:black;
+}
+
+.specialDay {
+    background-color: red;
+    color:black;
+}
+.holiday {
+
+    background-color: orange;
+    color:black;
+}
+.selected{
+    color:black;
+     background-color: silver;
+     border-collapse:separate;
+     border: 2px solid black;
+}
+.film_and_event{
+     background-image: url(/images/calendar_images/mixed_events.jpg);
+}
+
+.day_and_holiday{
+     background-image: url(/images/calendar_images/day_and_holiday.jpg);
+}
+
+.mixed_events_and_holiday{
+     background-image: url(/images/calendar_images/mixed_events_and_holiday.jpg);
+}
+.movie_and_holiday{
+     background-image: url(/images/calendar_images/movie_and_holiday.jpg);
+}
+.other_and_holiday{
+     background-image: url(/images/calendar_images/other_and_holiday.jpg);
+}
+.weekend_and_holiday{
+     background-image: url(/images/calendar_images/weekend_and_holiday.jpg);
+}
+
