@@ -1,0 +1,227 @@
+<html>
+  <head>
+    <%= javascript_include_tag :defaults %>
+    <%= calendar_date_select_includes "red" %>
+
+  
+  </head>
+
+  <body>
+   
+    <%
+    mon_value,tue_value,wen_value,thu_value,fri_value,sat_value,sun_value=false
+
+    if not @rrule.nil?
+      repeat_value= @rrule["FREQ"].titleize
+      until_value=Date.parse(@rrule["UNTIL"])
+      interval_value=@rrule["INTERVAL"]
+      start_value=Time.parse(@rrule["DTSTART"])
+      end_value=Time.parse(@rrule["DTEND"])
+
+        array=@rrule["BYDAY"].split(',') if not @rrule["BYDAY"].nil?
+      if not array.nil?
+      array.each{|i|
+        case i
+        when "SU":
+            sun_value=true
+        when "MO":
+          mon_value=true
+        when "TU":
+          tue_value=true
+        when "WE":
+          wen_value=true
+        when "TH":
+          thu_value=true
+        when "FR":
+          fri_value=true
+        when "SA":
+          sat_value=true
+        end
+      }
+      end
+    else
+      repeat_value= "No Repeats"
+      until_value=Time.now
+      interval_value="1"
+      start_value=@event.start
+      end_value=@event.end
+    end
+  %>
+
+
+    <h1>Show Event</h1>
+
+  
+      <table cellpadding="3" border="0" cellspacing="5" >
+        <tr>
+          <td>
+            Event Type:
+          </td>
+          <td>         
+            <%= @event.event_type%>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Title:
+          </td>
+          <td>
+            <%= @event.title%>
+
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Content:
+          </td>
+          <td>
+            <%=@event.content%>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            Where:
+          </td>
+          <td>
+            <%= @event.where%>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            Web Page:
+          </td>
+          <td>
+
+            <%= @event.webpage%>
+          </td>
+        </tr>
+
+
+        <tr>
+
+          <td>
+            Start Time:
+          </td>
+          <td>
+             <%= start_value.strftime(" %I:%M %p on %d-%m-%Y")%>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            End Time:
+          </td>
+          <td>
+           <%= end_value.strftime("%I:%M %p on %d-%m-%Y") %>
+          </td>
+          
+        </tr>
+        <tr>
+          <td>
+            Repeat :
+          </td>
+          <td>
+            <%= repeat_value %>
+
+          </td>   
+
+        </tr>
+        
+          <%if not repeat_value=="No Repeats"%>
+           <tr>
+             <td>
+
+                Repeat every:
+             </td>
+             <td>
+              <%= interval_value %> <span id="div_text"></span><span id="div_s_text"></span>
+             </td>
+           </tr>
+           <%if repeat_value=="Weekly"%>
+           <tr>
+             <td>
+         
+              Repeat On:
+               </td>
+             <td>
+
+              <%= "Sun, " if sun_value%>
+              <%= "Mon, " if mon_value%>
+              <%= "Tue, " if tue_value%>
+              <%= "Wen, " if wen_value%>
+              <%= "Thu, " if thu_value%>
+              <%= "Fri, " if fri_value%>
+              <%= "Sat, " if sat_value%>
+             
+             </td>
+           </tr>
+             <%end%>
+            <tr>
+             <td>
+                Repeat Until:
+              </td>
+              <td>
+                <%= until_value.strftime("%d-%m-%Y") %>
+              </td>
+            </tr>
+         
+        
+         <%end%>
+             <tr>
+              <td colspan="2">
+              <%if @event.highlight=="true"
+                  highlight_value=true
+                else
+                  highlight_value=false
+                end
+              %>
+            Highlight on Calendar: <%= check_box_tag "highlight", true,highlight_value, {:disabled =>true}%>
+              </td>
+            </tr>
+
+   
+       
+            <%= hidden_field_tag 'cal_id', @cal_id %>
+            <%= hidden_field_tag 'event_title', @event_title %>
+            <%= hidden_field_tag 'cal_title', @cal_title %>
+
+       
+
+      </table>
+      <script type='text/javascript'>
+        var value="<%=repeat_value%>"
+        var interval="<%=interval_value%>"
+ 
+        if (interval!="1"){
+          document.getElementById("div_s_text").innerHTML = "s";
+        }
+        switch(value)
+        {
+          case "No Repeats":
+            break;
+          case "Daily":
+            document.getElementById("div_text").innerHTML = "day";
+            break;
+          case "Weekly":
+            document.getElementById("div_text").innerHTML = "week";
+            break;
+          case "Monthly":
+            document.getElementById("div_text").innerHTML = "month";
+            break;
+          case "Yearly":
+            document.getElementById("div_text").innerHTML = "year";
+            break;
+          default:
+        }
+
+
+      </script>
+     <br>
+    <%=link_to 'Back to Events', "/events?title=#{@cal_title}&cal_id=#{@cal_id}" %> &nbsp;&nbsp;
+    <%=link_to 'Edit Event',"/events/update/true?event_title=#{@event_title}&event_id=#{@event_id}&cal_id=#{@cal_id}"+
+        "&cal_title=#{@cal_title}&status=edit&year=#{@year}&month=#{@month}" %>
+  </body>
+
+</html>

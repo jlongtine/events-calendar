@@ -1,0 +1,58 @@
+
+ <%= javascript_include_tag :defaults %>
+ <%= calendar_date_select_includes "red" %>
+
+<script src="/javascripts/events_calendar_js/calendar_validation.js"></script>
+
+
+<h3>Delete Recurrence Events</h3>
+<div id="errorText" style="color:red"></div>
+
+Event Name : <%= URI.unescape(@event_title)%><br>
+Start Date : <%=@start%><br>
+Until   : <%=@end%><br><br>
+<% form_tag('/events/delete_instance/', {:onSubmit => 'return validateRange();'} ) do -%>
+
+        <%= radio_button( "range", "delete_all","true",{:checked => true, :onclick=>"disable_div('true')" })%> Delete All &nbsp;&nbsp;
+        <%= radio_button( "range", "delete_all","false",{:checked =>false, :onclick=>"disable_div('false')" } )%> Delete Single Instance
+        <%=  %>
+        <br>
+        <div id="range_select_div">
+        <p id="text_p">Enter a range which you wish to display the available instance.</p>
+
+        From: <%= calendar_date_select_tag "start_date", Date.today, {:onchange => "onChangeDate()"} %>&nbsp;&nbsp;
+
+        To :<%= calendar_date_select_tag "end_date", Date.today+30 , {:onchange => "onChangeDate()"}  %>
+        </div>
+        <br><br>
+            <%= hidden_field_tag 'cal_id', @cal_id %>
+            <%= hidden_field_tag 'event_title', @event_title %>
+            <%= hidden_field_tag 'cal_title', @cal_title %>
+            <%= hidden_field_tag 'event_id', @event_id %>
+        <%= submit_tag 'Ok',:confirm => 'Are you sure you want to procceed?' %>
+
+    <% end-%>
+     <%=link_to 'Back to Events', "/events?title=#{@cal_title}&cal_id=#{@cal_id}" %>
+
+<script language="javascript" type="text/javascript">
+  function disable_div(value){
+    if(value=='true')
+      {
+        document.getElementById("start_date").disabled=true
+        document.getElementById("end_date").disabled=true
+       
+        document.getElementById("range_select_div").style.color='#B0B0B0'
+      }else{
+        document.getElementById("start_date").disabled=false
+        document.getElementById("end_date").disabled=false
+        document.getElementById("range_select_div").style.color='#000000'
+
+      }
+
+  }
+
+
+  disable_div("true")
+  document.getElementById("range_delete_all_true").click()
+
+</script>

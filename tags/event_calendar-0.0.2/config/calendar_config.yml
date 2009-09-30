@@ -1,0 +1,14 @@
+## YAML Template.
+ # CLIENT_CAL_ID: lk5896a6jkdaq0hivcetq4qg8k@group.calendar.google.com
+ # CLIENT_CAL_ID: a70t3ggs4q2voa4tpgc6jg1up8@group.calendar.google.com
+   CLIENT_CAL_ID: eventcalendarravin@gmail.com
+ # CLIENT_CAL_ID: ticketslk.events@gmail.com
+#   ADMIN_CALENDAR_EMAIL_ADDRESS: eventcalendarravin@gmail.com
+   ADMIN_CALENDAR_EMAIL_ADDRESS: ticketslk.events@gmail.com
+#   ADMIN_CALENDAR_PASSWORD: welcome#1
+   ADMIN_CALENDAR_PASSWORD: eventscal#1
+
+   CALENDAR_XML: lib/calendar_details.xml
+   EVENT_TYPE_XML: config/event_types.xml
+
+ 
