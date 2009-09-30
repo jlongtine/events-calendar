@@ -7,6 +7,10 @@
 
 <h3>Delete Recurrence Events</h3>
 <div id="errorText" style="color:red"></div>
+
+Event Name : <%= URI.unescape(@event_title)%><br>
+Start Date : <%=@start%><br>
+Until   : <%=@end%><br><br>
 <% form_tag('/events/delete_instance/', {:onSubmit => 'return validateRange();'} ) do -%>
 
         <%= radio_button( "range", "delete_all","true",{:checked => true, :onclick=>"disable_div('true')" })%> Delete All &nbsp;&nbsp;

@@ -29,6 +29,10 @@
 
    };
 
+  function sDateOnchage(value){
+      document.getElementById("end_date").value=value;
+      startDateOnchage();
+    }
 
   function repeats_select(value){
     document.getElementById("div_repeat_weekly").style.display = 'none';
@@ -64,6 +68,34 @@
       }
 
     };
+
+
+   function typeOnchage(value){
+      
+      if(value=="Holiday"){
+
+        document.getElementById("event_where").readOnly=true;
+        document.getElementById("event_content").readOnly=true;
+        document.getElementById("event_webpage").readOnly=true;
+
+
+        document.getElementById("event_where").value="N/A";
+        document.getElementById("event_content").value="N/A";
+        document.getElementById("event_webpage").value="N/A";
+
+      }else{
+        document.getElementById("event_where").readOnly=false;
+        document.getElementById("event_content").readOnly=false;
+        document.getElementById("event_webpage").readOnly=false;
+
+
+        document.getElementById("event_where").value="";
+        document.getElementById("event_content").value="";
+        document.getElementById("event_webpage").value="";
+      }
+
+
+    }
 
 
     </script>
@@ -128,7 +160,7 @@
              end
             %>
            
-            <%= select_tag "event_type", options_for_select( @events_type,type) %>
+            <%= select_tag "event_type", options_for_select( @events_type,type),{:onchange => "typeOnchage(this.value)"} %>
           </td>
         </tr>
         <tr>
@@ -176,7 +208,7 @@
             Start Time:
           </td>
           <td>
-            <%= calendar_date_select_tag "start_date", start_value, {:size=>"24%",:time => true ,:onchange => "startDateOnchage()"}  %>
+            <%= calendar_date_select_tag "start_date", start_value, {:size=>"24%",:time => true ,:onchange => "sDateOnchage(this.value)"}  %>
           </td>
 
           <td>
@@ -247,6 +279,8 @@
             <%= hidden_field_tag 'event_title', @event_title %>
             <%= hidden_field_tag 'cal_title', @cal_title %>
             <%= hidden_field_tag 'event_id', @event_id %>
+            <%= hidden_field_tag 'month', @month %>
+            <%= hidden_field_tag 'year', @year %>
           </td>
 
           <td align="right">
@@ -265,6 +299,10 @@
                   var interval="<%=interval_value%>";
                   repeats_select(repeat_type);
                   set_text(interval);
+                 
+                  var event_type="<%=@event.event_type.titleize%>";                
+                  <%#*typeOnchage(event_type);%>
+
     </script>
     <%=link_to 'Back to Events', "/events?title=#{@cal_title}&cal_id=#{@cal_id}" %>
   </body>

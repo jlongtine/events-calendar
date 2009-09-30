@@ -51,6 +51,18 @@ class EventsController < ApplicationController
     calendar.init(@cal_id, service)
 
     @events=Gcal4rubyEvent.find_with_auth(calendar,'',{:scope=>:all,:max_results=>100, :range=>{:start=>start_time,:end=>end_time}})
+    
+    @events.each{|event|
+        recurr_ob=event.get_recurrence
+
+        if not recurr_ob[:startDate].nil?
+          event.start=recurr_ob[:startDate]
+          event.end=recurr_ob[:endDate]
+        end      
+        
+    }
+      
+    
     rescue GCal4Ruby::HTTPGetFailed => gcal4ruby_error
       puts "#{ gcal4ruby_error } (#{ gcal4ruby_error.class })!"
       redirect_to "/calendars?error=get_failed"
@@ -105,6 +117,8 @@ class EventsController < ApplicationController
         highlight="false"
       end
 
+  
+
       new_event.title = params[:title]
       new_event.start =Time.parse(params[:start_date])
       new_event.end =Time.parse(params[:end_date])
@@ -150,10 +164,12 @@ class EventsController < ApplicationController
         #          new_event.recurrence.frequency = {"Monthly" => ["+2FR"],"interval"=>"1"}
 
       end
+     
       new_event.save
 
       redirect_to "/events/new?cal_id=#{params[:cal_id]}&status=true"
-    rescue
+    rescue Exception=>e
+      puts e
       redirect_to "/events/new?cal_id=#{params[:cal_id]}&status=false"
     end
   end
@@ -164,13 +180,16 @@ class EventsController < ApplicationController
     @cal_title=params[:cal_title]
     @event_title=URI.escape(params[:id])
     @event_id=params[:event_id]
-    @event=get_event(@cal_id,@event_title,@event_id)
+    @update_status=params[:id]
+    @month=params[:month]
+    @year=params[:year]
+    @event=get_event(@cal_id,@event_title,@event_id,@month,@year)
     @rrule=@event.get_rrule_hash()
 
   end
 
-  def get_event(cal_id,title,eve_id)
-    
+  def get_event(cal_id,title,eve_id,month,year)
+      
     service=get_authenticated
 
     eve_id=URI.escape(eve_id,"@")
@@ -178,9 +197,14 @@ class EventsController < ApplicationController
     calendar=Gcal4rubyCalendar.new
 
     calendar.init(cal_id, service)
-    event=Gcal4rubyEvent.find_without_auth(calendar,eve_id,{:scope=>:first})
+    start="#{year}-#{month}-1"
 
-   
+    start_time="#{Date.parse(start)}T00:00:00"
+    end_time="#{Date.parse(start)+31}T00:00:00"
+  
+    event=Gcal4rubyEvent.find_without_auth(calendar,eve_id,{:scope=>:first,:max_results=>100, :range=>{:start=>start_time,:end=>end_time}})
+
+
     begin
 
 
@@ -191,7 +215,7 @@ class EventsController < ApplicationController
       event.webpage=description[2].split('-',2)[1]
 
       
-    rescue
+    rescue Exception
       puts "Event Calendar-Event description format incorrect"
     end
 
@@ -225,32 +249,37 @@ class EventsController < ApplicationController
     @event_title=URI.escape(params[:event_title])
     @event_id=params[:event_id]
     @update_status=params[:id]
-    @event=get_event(@cal_id,@event_title,@event_id)
+    @month=params[:month]
+    @year=params[:year]
+    @event=get_event(@cal_id,@event_title,@event_id,@month,@year)
 
-    @rrule=@event.get_rrule_hash()
+    @rrule=@event.get_rrule_hash()# if not @event.nil?
   end
 
   def edit    
 
-    begin
+#    begin
 
-       if params[:where]=="" or params[:title]==""
+      if params[:where]=="" or params[:title]==""
         raise ArgumentError
       end
 
       service=get_authenticated
 
-  
+
       event_id=params[:event_id]
-
       calendar=Gcal4rubyCalendar.new
-
       calendar.init(params[:cal_id], service)
 
       event_id=URI.escape(event_id,"@")
 
-      new_event=Gcal4rubyEvent.find_with_auth(calendar,event_id,{:scope=>:first})
+      start="#{params[:year]}-#{params[:month]}-1"
 
+      start_time="#{Date.parse(start)}T00:00:00"
+      end_time="#{Date.parse(start)+31}T00:00:00"
+
+      new_event=Gcal4rubyEvent.find_with_auth(calendar,event_id,{:scope=>:first,:max_results=>100, :range=>{:start=>start_time,:end=>end_time}})
+      
 
       updated_event=params[:event]
 
@@ -263,6 +292,7 @@ class EventsController < ApplicationController
       new_event.title=updated_event[:title]
       new_event.content="highlight-#{highlight},type-#{params[:event_type].downcase},webpage-#{updated_event[:webpage]},#{updated_event[:content]}"
       new_event.where=updated_event[:where]
+     
       new_event.start=Time.parse(params[:start_date])
       new_event.end=Time.parse(params[:end_date])
 
@@ -288,11 +318,11 @@ class EventsController < ApplicationController
           repeat_type="weekly"
 
         when "Monthly":
-          day_of_the_month=Time.parse( params[:start_date]).strftime("%d")
+            day_of_the_month=Time.parse( params[:start_date]).strftime("%d")
           param_arr.push(day_of_the_month)
           repeat_type="by_month_day"
         when "Yearly":
-          day_of_year =Time.parse( params[:start_date]).strftime("%j")
+            day_of_year =Time.parse( params[:start_date]).strftime("%j")
           param_arr.push(day_of_year.to_i)
           repeat_type="yearly"
         end
@@ -304,12 +334,14 @@ class EventsController < ApplicationController
 
 
       end
-
+     
       new_event.save
       redirect_to "/events?title=#{params[:cal_title]}&cal_id=#{params[:cal_id]}"
-    rescue
-      redirect_to "/events/update/false?event_title=#{updated_event[:title]}&event_id=#{event_id}&cal_id=#{params[:cal_id]}&cal_title=#{params[:cal_title]}"
-    end
+#    rescue Exception=>e
+#
+#      redirect_to "/events/update/false?event_title=#{updated_event[:title]}&event_id=#{event_id}"+
+#        "&cal_id=#{params[:cal_id]}&cal_title=#{params[:cal_title]}&date=#{Date.parse(params[:start_date])}"
+#    end
 
   end
 
@@ -317,11 +349,9 @@ class EventsController < ApplicationController
   def destroy
 
   
-    service=get_authenticated
-   
+    service=get_authenticated   
 
-    event_id=params[:event_id].sub!("http://www.google.com/calendar/feeds/#{params[:cal_id]}/events/", '')
-    
+    event_id=params[:event_id].sub!("http://www.google.com/calendar/feeds/#{params[:cal_id]}/events/", '')    
     ss =Gcal4rubyEvent.newdelete(params[:cal_id],service,event_id)
     
 
@@ -336,7 +366,18 @@ class EventsController < ApplicationController
     @cal_id=params[:cal_id]
     @cal_title=URI.escape(params[:cal_title])
     @event_title=URI.escape(params[:event_title])
+    @start=params[:start].to_s   
+    @end=params[:end].to_s
     @event_id=params[:event_id]
+    
+    if @start.empty? and @end.empty?  
+       @start=session["end"]
+       @end=session["start"]
+    else     
+       session["end"]=@start
+       session["start"]=@end
+    end
+   
 
   end
 
@@ -372,6 +413,7 @@ class EventsController < ApplicationController
         @event_id=URI.escape(params[:event_id],"@")
         @events=Gcal4rubyEvent.find_with_auth(calendar,eve_title,{:scope=>:all,:max_results=>100, :range=>{:start=> Date.parse(@start).strftime("%Y-%m-%dT%H:%M:%S"),:end=>Date.parse(@end).strftime("%Y-%m-%dT%H:%M:%S")}})
 
+        
       
         @events.each{|event|
           if(event.status.to_s=="confirmed")
@@ -399,7 +441,6 @@ class EventsController < ApplicationController
     end_date=Date.parse(params[:end]).strftime("%Y-%m-%d")
 
     service=get_authenticated
-
  
     pattern="http://www.google.com/calendar/feeds/#{params[:cal_id]}/events/"
     pattern=URI.escape(pattern,"@")
@@ -421,8 +462,9 @@ class EventsController < ApplicationController
     event.id=eve_id
     event.cal_id=params[:cal_id]
     event.save
+   
     redirect_to "/events/delete_instance/true?cal_title=#{params[:cal_title]}&cal_id=#{params[:cal_id]}"+
-      "&event_id=#{params[:event_id]}&event_title=#{params[:event_title]}&start_date=#{start_date}&end_date=#{end_date}"
+      "&event_id=#{pattern+eve_id}&event_title=#{params[:event_title]}&start_date=#{start_date}&end_date=#{end_date}"
    
   end
 
@@ -431,7 +473,8 @@ class EventsController < ApplicationController
 
       service = GCal4Ruby::Service.new
       service.authenticate(CONFIG['ADMIN_CALENDAR_EMAIL_ADDRESS'],CONFIG['ADMIN_CALENDAR_PASSWORD'])
-      session["service"]=service
+#      service.debug=true
+#      session["service"]=service
     #else
     #  service=session["service"]
     #end

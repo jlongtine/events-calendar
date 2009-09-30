@@ -5,8 +5,8 @@
 <%if(!@events.nil?)%>
   <table>
     <tr>
-      <th>Start Date</th>
-      <th width="300">Title</th>
+      <th style="padding-right: 15px;">Start Date</th>
+      <th style="padding-right: 15px;" width="300">Title</th>
     </tr>
     <%if(@events.size!=0)%>
     <% @events.sort_by {|u| u.start || Time.parse("2000-01-01")}.each do |event| %>
@@ -17,14 +17,16 @@
         <td><%=h Date.parse(event.start.to_s) %></td>
 
         <td><%=h event.title %></td>
-        <td><%= link_to 'Show',"events/show/#{URI.escape(event.title)}?event_id=#{event.id}&cal_id=#{@cal_id}&cal_title=#{@cal_title}"%></td>
-        <td><%= link_to 'Edit', "events/update/true?event_title=#{event.title}&event_id=#{event.id}&cal_id=#{@cal_id}&cal_title=#{@cal_title}&status=edit" %></td>
+        <td><%= link_to 'Show',"events/show/#{URI.escape(event.title)}?event_id=#{event.id}&cal_id=#{@cal_id}&cal_title=#{@cal_title}&year=#{@year}&month=#{@month}"%></td>
+        <td><%= link_to 'Edit', "events/update/true?event_title=#{event.title}&event_id=#{event.id}&cal_id=#{@cal_id}&cal_title=#{@cal_title}&status=edit&year=#{@year}&month=#{@month}" %></td>
         <td>
           <%if event.get_rrule_hash().nil?%>
-            <%= link_to 'Destroy', "events/destroy/?event_title="+event.title+"&cal_title="+@cal_title+"&cal_id="+@cal_id+"&event_id="+event.id, :confirm => 'Are you sure?', :method => :delete %>
+            <%= link_to 'Destroy', "events/destroy/?event_title="+event.title+"&cal_title="+@cal_title+
+              "&cal_id="+@cal_id+"&event_id="+event.id, :confirm => 'Are you sure?', :method => :delete %>
 
           <%else%>
-            <%= link_to 'Destroy*', "events/range_select/?event_title="+event.title+"&cal_title="+@cal_title+"&cal_id="+@cal_id+"&event_id="+event.id, :method => :range_select %>
+            <%= link_to 'Destroy*', "events/range_select/?event_title="+event.title+"&cal_title="+@cal_title+
+              "&cal_id="+@cal_id+"&event_id="+event.id+"&start="+Date.parse(event.start.to_s).to_s+"&end="+Date.parse(event.end.to_s).to_s, :method => :range_select %>
           <%end%>
         </td>
 
@@ -50,4 +52,5 @@
 
 <%=link_to 'New Event', "events/new?cal_id=#{@cal_id}&status=new" %> &nbsp;&nbsp;
  <%= link_to 'Back to Calendars', "/calendars" %>
-
+ <br>
+  <span style="color:gray;font-size:12px;"> * - Repeating Event</span>

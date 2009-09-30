@@ -107,9 +107,10 @@ class CalendarClientsController < ApplicationController
 
           end
         rescue Exception=>err
-          puts err
+          puts "Error"+err
         end
-        
+       
+
         if ((@events_details[event.event_type]["disply_first_only"]=="true") and (Date.parse(re_start_date.to_s).month==@month.to_i))
 
           @events_details[event.event_type]["array"].push(Date.parse(re_start_date.to_s))
@@ -302,7 +303,7 @@ class CalendarClientsController < ApplicationController
                 " to "+DateTime.parse(re_end_date.to_s).strftime("%B %d")
                end
             rescue Exception => err
-                puts err
+                puts "Error"+err
             end
 
 
@@ -336,11 +337,14 @@ class CalendarClientsController < ApplicationController
             @event_ob.push(event_re) if (Time.parse(start_time) <= event_re.start and  event_re.start < Time.parse(end_time) )
             }
           else
-       
+            begin
             @events_details[event.event_type]["array"].push(Date.parse(event.start.to_s)) if not @events_details[event.event_type]["disply_first_only"]=="true" and event.highlight=="true"
             @event_ob.push(event) if (Time.parse(start_time) <= event.start and  event.start < Time.parse(end_time))
             @tooltip_ob.push(event) if event.highlight=="true"
             #@tooltip_ob.push(event) if not @events_details[event.event_type]["disply_first_only"]=="true" and event.highlight=="true"
+          rescue Exception=>er
+              puts "Error: "+er
+            end
 
         end
 
@@ -351,7 +355,7 @@ class CalendarClientsController < ApplicationController
       end
 
     rescue Exception=>error
-      puts error
+      puts "error: "+error
 
     end
 
